@@ -1,0 +1,26 @@
+{
+  "name": "habit-tracker-api",
+  "version": "1.0.0",
+  "description": "Personal Habit Tracking & Streak Management REST API",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "jest --runInBand --detectOpenHandles"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.12",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}
