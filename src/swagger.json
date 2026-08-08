@@ -1,0 +1,248 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Personal Habit Tracking & Streak Management REST API",
+    "version": "1.0.0",
+    "description": "API documentation for managing user habits, tracking completions, and monitoring daily streaks."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token in the format: Bearer <your-token>"
+      }
+    },
+    "schemas": {
+      "RegisterInput": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": { "type": "string", "example": "Harsh Kankariya" },
+          "email": { "type": "string", "example": "harsh@example.com" },
+          "password": { "type": "string", "example": "password123", "minLength": 6 }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "example": "harsh@example.com" },
+          "password": { "type": "string", "example": "password123" }
+        }
+      },
+      "HabitInput": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "example": "Read Books" },
+          "description": { "type": "string", "example": "Read 10 pages of a book daily" },
+          "frequency": { "type": "string", "enum": ["daily", "weekly"], "default": "daily" },
+          "tags": { "type": "array", "items": { "type": "string" }, "example": ["learning", "mind"] },
+          "reminderTime": { "type": "string", "example": "08:00", "description": "Format: HH:MM" }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "token": "eyJhbGciOiJIUzI1NiIs...",
+                  "data": {
+                    "user": { "id": "6a76bdca...", "name": "Harsh Kankariya", "email": "harsh@example.com" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation error or email already in use" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate user and get JWT",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "token": "eyJhbGciOiJIUzI1NiIs...",
+                  "data": {
+                    "user": { "id": "6a76bdca...", "name": "Harsh Kankariya", "email": "harsh@example.com" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid email or password" }
+        }
+      }
+    },
+    "/habits": {
+      "post": {
+        "summary": "Create a new habit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/HabitInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Habit created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "habit": {
+                      "title": "Read Books",
+                      "description": "Read 10 pages",
+                      "frequency": "daily",
+                      "user": "6a76bdca...",
+                      "tags": ["learning"],
+                      "reminderTime": "08:00",
+                      "currentStreak": 0,
+                      "longestStreak": 0,
+                      "_id": "6a76c701...",
+                      "createdAt": "2026-08-08T06:04:49.853Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all habits of the logged-in user",
+        "parameters": [
+          { "name": "tag", "in": "query", "required": false, "schema": { "type": "string" }, "description": "Filter habits by tag name" },
+          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer", "default": 1 }, "description": "Page number for pagination" },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 10 }, "description": "Number of records per page" }
+        ],
+        "responses": {
+          "200": { "description": "Successful retrieval of habits" }
+        }
+      }
+    },
+    "/habits/{id}": {
+      "get": {
+        "summary": "Get details of a specific habit",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Successful retrieval" },
+          "404": { "description": "Habit not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a habit",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/HabitInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Habit updated successfully" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a habit",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Habit deleted successfully" }
+        }
+      }
+    },
+    "/habits/{id}/track": {
+      "post": {
+        "summary": "Track habit completion for today",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Habit completion logged successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "message": "Habit tracked successfully!",
+                  "data": {
+                    "log": { "habit": "6a76c701...", "date": "2026-08-07T18:30:00.000Z", "_id": "6a76c701..." },
+                    "streaks": { "currentStreak": 1, "longestStreak": 1 }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Habit already completed today" }
+        }
+      }
+    },
+    "/habits/{id}/history": {
+      "get": {
+        "summary": "Get completion logs of last 7 days & current streak stats",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Successful retrieval of history and streaks" }
+        }
+      }
+    }
+  }
+}
