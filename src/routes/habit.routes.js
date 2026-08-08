@@ -7,6 +7,7 @@ const {
   updateHabit,
   deleteHabit,
 } = require('../controllers/habit.controller');
+const { trackHabit, getHistory } = require('../controllers/track.controller');
 
 const router = express.Router();
 
@@ -21,5 +22,8 @@ router.route('/:id')
   .get(getHabitById)
   .put(updateHabit)
   .delete(deleteHabit);
+
+router.post('/:id/track', trackHabit);
+router.get('/:id/history', getHistory);
 
 module.exports = router;

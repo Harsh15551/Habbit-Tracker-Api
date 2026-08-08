@@ -34,6 +34,17 @@ const habitSchema = new mongoose.Schema({
       message: 'Reminder time must be in HH:MM format',
     },
   },
+  currentStreak: {
+    type: Number,
+    default: 0,
+  },
+  longestStreak: {
+    type: Number,
+    default: 0,
+  },
+  lastCompletedDate: {
+    type: Date,
+  },
 }, { timestamps: true });
 
 // Add index on user for fast retrieval of user's habits
