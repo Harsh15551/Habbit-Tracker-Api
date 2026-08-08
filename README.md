@@ -4,6 +4,19 @@ A production-ready, backend-only habit tracker REST API built using **Node.js, E
 
 ---
 
+## 🌐 Live Deployment & Interactive Testing
+
+The API is fully deployed in the cloud and connected to MongoDB Atlas. You can access and test all endpoints visually using the Swagger UI page without running any local servers:
+
+👉 **Live Swagger UI: [https://habbit-tracker-api.onrender.com](https://habbit-tracker-api.onrender.com)**
+
+### 🧪 Pre-seeded Testing Account
+Use this pre-registered account to authorize your requests in Swagger and start testing immediately:
+* **Email:** `cloud_tester@example.com`
+* **Password:** `password123`
+
+---
+
 ## 🛠️ Tech Stack
 - **Runtime Environment**: Node.js (ES6+ Javascript)
 - **Framework**: Express
