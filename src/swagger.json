@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "https://habbit-tracker-api.onrender.com/api/v1",
+      "description": "Production Server (Render)"
+    },
+    {
       "url": "http://localhost:5000/api/v1",
       "description": "Local Development Server"
     }

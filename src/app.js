@@ -14,6 +14,9 @@ app.use(express.json());
 // Serve Swagger UI API documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Redirect root path to API docs
+app.get('/', (req, res) => res.redirect('/api-docs'));
+
 // Apply rate limiter to downstream endpoints
 app.use(limiter);
 
